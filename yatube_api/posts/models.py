@@ -44,7 +44,6 @@ class Post(models.Model):
     class Meta:
         verbose_name = 'Пост'
         verbose_name_plural = 'Посты'
-        ordering = ('-pub_date',)
 
     def __str__(self):
         """Человекочитаемый текст поста, урезанный до 15 символов."""
