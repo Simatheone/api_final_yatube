@@ -1,8 +1,10 @@
 from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
 
+from posts.models import Comment, Follow, Group, Post, User
 
-from posts.models import Comment, Follow, Group, Post
+SELF_FOLLOWING_ERROR = 'Пользователь не может подписаться сам на себя.'
+DOUBLE_FOLLOWING_ERROR = 'Нельзя дважды подписаться на одного юзера.'
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -36,8 +38,26 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class FollowSerializer(serializers.ModelSerializer):
     """Сериализотор модели Follow."""
+    following = serializers.SlugRelatedField(
+        slug_field='username', queryset=User.objects.all()
+    )
+    user = serializers.SlugRelatedField(
+        slug_field='username', read_only=True, default=serializers.CurrentUserDefault()
+    )
     
     class Meta:
         model = Follow
-        # Проверить и подправить
-        fields = '__all__'
+        fields = ['user', 'following']
+
+    def validate(self, data):
+        following_request_value = data.get('following')
+        request_user = self.context.get('request').user
+        subscription_in_db_exists = Follow.objects.filter(
+            user=request_user, following=following_request_value).exists()
+
+        if following_request_value == request_user:
+            raise serializers.ValidationError(SELF_FOLLOWING_ERROR)
+        elif subscription_in_db_exists:
+            raise serializers.ValidationError(DOUBLE_FOLLOWING_ERROR)
+        return data
+        
