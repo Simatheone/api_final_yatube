@@ -85,7 +85,7 @@ class Follow(models.Model):
     user = models.ForeignKey(
         User, on_delete=CASCADE, related_name='follower'
     )
-    author = models.ForeignKey(
+    following = models.ForeignKey(
         User, on_delete=CASCADE, related_name='following'
     )
     
@@ -94,12 +94,12 @@ class Follow(models.Model):
         verbose_name_plural = 'Подписки'
         constraints = [
             UniqueConstraint(
-                fields=['user', 'author'], name='unique_follower'
+                fields=['user', 'following'], name='unique_follower'
             ),
-            CheckConstraint(check=~Q(user=F('author')),
+            CheckConstraint(check=~Q(user=F('following')),
                             name='user_cant_follow_himself'),
         ]
 
     def __str__(self):
         """Чиловекочитаемое обозначение подписок на авторов постов."""
-        return f'{self.user.username} подписался на {self.author.username}'
+        return f'{self.user.username} подписался на {self.following.username}'

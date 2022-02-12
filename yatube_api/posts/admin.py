@@ -47,5 +47,5 @@ class CommentAdmin(admin.ModelAdmin):
 @admin.register(Follow)
 class FollowAdmin(admin.ModelAdmin):
     """Класс для отображения подписок в админ панели."""
-    list_display = ('user', 'author')
+    list_display = ('user', 'following')
     search_fields = ('user',)
