@@ -19,7 +19,7 @@ class PostSerializer(serializers.ModelSerializer):
 
 class GroupSerializer(serializers.ModelSerializer):
     """Сериализатор для модели Group."""
-    
+
     class Meta:
         model = Group
         fields = ('id', 'title', 'slug', 'description')
@@ -42,9 +42,10 @@ class FollowSerializer(serializers.ModelSerializer):
         slug_field='username', queryset=User.objects.all()
     )
     user = serializers.SlugRelatedField(
-        slug_field='username', read_only=True, default=serializers.CurrentUserDefault()
+        slug_field='username', read_only=True,
+        default=serializers.CurrentUserDefault()
     )
-    
+
     class Meta:
         model = Follow
         fields = ['user', 'following']
@@ -60,4 +61,3 @@ class FollowSerializer(serializers.ModelSerializer):
         elif subscription_in_db_exists:
             raise serializers.ValidationError(DOUBLE_FOLLOWING_ERROR)
         return data
-        

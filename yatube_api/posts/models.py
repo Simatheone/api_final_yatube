@@ -88,7 +88,7 @@ class Follow(models.Model):
     following = models.ForeignKey(
         User, on_delete=CASCADE, related_name='following'
     )
-    
+
     class Meta:
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'

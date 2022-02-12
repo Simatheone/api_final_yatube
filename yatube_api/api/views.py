@@ -1,9 +1,9 @@
 from rest_framework import filters
-from rest_framework import status
 from rest_framework import viewsets
-from rest_framework.response import Response
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.permissions import (
+    IsAuthenticatedOrReadOnly, IsAuthenticated
+)
 from django.shortcuts import get_object_or_404
 
 from api.serializers import (
@@ -35,11 +35,11 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     """
     Вьюсет для обработки CRUD запросов.
-    Эндпоинты: 
+    Эндпоинты:
     posts/<post_id>/comments/ и posts/<post_id>/comments/<comment_id>/
     """
     serializer_class = CommentSerializer
-    permission_classes = (IsAuthorOrReadOnly,) 
+    permission_classes = (IsAuthorOrReadOnly,)
 
     def get_queryset(self):
         post_id = self.kwargs.get('post_id')
@@ -56,13 +56,14 @@ class CommentViewSet(viewsets.ModelViewSet):
     def perform_destroy(self, instance):
         instance.delete()
 
+
 class FollowViewSet(viewsets.ModelViewSet):
     """Вьюсет для обработки CRUD запросов follow/... ."""
     serializer_class = FollowSerializer
     permission_classes = (IsAuthenticated,)
     filter_backends = [filters.SearchFilter]
     search_fields = ['following__username']
-    
+
     def get_queryset(self):
         return Follow.objects.filter(user=self.request.user)
 
